@@ -21,7 +21,8 @@ const authorSchema = mongoose.Schema(
         },
         email: {
             type: String,
-            required: true,
+                               
+            format:"email", //email validation
             unique: true,
             
         },

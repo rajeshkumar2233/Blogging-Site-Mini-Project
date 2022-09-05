@@ -18,20 +18,19 @@ const blogSchema = mongoose.Schema(
             required: true,
            
         },
-        tags: [{
-            type:String, 
-            
-        }],
+        tags: [String],
         category: [{
             type: String,
             required: true, 
             
         }],
-        subcategory: [{
-            type:String
-        }], 
+        subcategory: mongoose.Schema.Types.Mixed, 
            
         
+        deletedAt: {
+            type: Date,
+            // default:null
+        },
         isPublished: {
             type: Boolean,
             default: false
@@ -44,10 +43,6 @@ const blogSchema = mongoose.Schema(
             type: Boolean,
             default: false
         },
-        deletedAt: {
-            type: Date,
-            default:null
-        }
     },
     { timestamps: true }
 )
