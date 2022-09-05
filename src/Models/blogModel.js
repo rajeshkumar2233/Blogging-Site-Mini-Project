@@ -22,12 +22,14 @@ const blogSchema = mongoose.Schema(
             type:String, 
             
         }],
-        category: {
+        category: [{
             type: String,
             required: true, 
             
-        },
-        subcategory: String, 
+        }],
+        subcategory: [{
+            type:String
+        }], 
            
         
         isPublished: {
