@@ -19,6 +19,7 @@ router.delete('/blogs/:blogId',blogController.deletebyBlogId)
 //update blogg
 
 router.put("/blogs/:blogId", blogController.updateBlog)
+router.delete("/blogs",blogController.deleteBlog)
 
 
 module.exports = router

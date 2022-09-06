@@ -61,7 +61,7 @@ const deletebyBlogId = async function (req, res) {
 
 
 
-module.exports.createBlog = createBlog
+
 module.exports.deletebyBlogId = deletebyBlogId
 // ### PUT /blogs/:blogId
 // - Updates a blog by changing the its title, body, adding tags, adding a subcategory.
@@ -130,6 +130,19 @@ const updateBlog = async function (req, res) {
     }
 
 }
+const deleteBlog = async function(req,res) {
+    try{
+    let data = req.query
+    let result = {isDeleted:false,...data}
+    let find = await blogModel.find(result)
+    if(find.length==0) return res.status(404).send({status:false,msg:"collection is not found"})
+    let findData = await blogModel.updateMany(result,{isDeleted:true,deletedAt:Date.now()},{new:true})
+    res.status(200).send({status:true,msg:findData})
+    } catch (error) {
+        res.status(500).send({status:false,msg:error.message})
+    }
+}
 
 module.exports.createBlog = createBlog
 module.exports.updateBlog = updateBlog
+module.exports.deleteBlog = deleteBlog
