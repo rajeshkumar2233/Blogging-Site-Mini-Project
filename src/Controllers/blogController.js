@@ -61,8 +61,7 @@ const deletebyBlogId = async function (req, res) {
 
 
 
-module.exports.createBlog = createBlog
-module.exports.deletebyBlogId = deletebyBlogId
+
 // ### PUT /blogs/:blogId
 // - Updates a blog by changing the its title, body, adding tags, adding a subcategory.
 //          (Assuming tag and subcategory received in body is need to be added)
@@ -131,5 +130,7 @@ const updateBlog = async function (req, res) {
 
 }
 
+
 module.exports.createBlog = createBlog
+module.exports.deletebyBlogId = deletebyBlogId
 module.exports.updateBlog = updateBlog
