@@ -13,6 +13,16 @@ const createAuthor = async function (req, res) {
         //validation of corect insertionn 
 
 
+        if(typeof fname !== "string") {
+            return res.status(400).send({status:false,msg:"please enetr a valid firstname"})
+        }
+        if(typeof lname !== "string") {
+            return res.status(400).send({status:false,msg:"please enetr a valid lastname"})
+        }
+        if(title !== "Mr" || title !== "Mrs" || title !== "Miss") {
+            return res.status(400).send({status:false,msg:"please enter  Mr or Mrs or Miss"})
+        }
+
         
         let findEmail = await authorModel.findOne({email:email})
 
