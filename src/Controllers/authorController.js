@@ -9,8 +9,12 @@ const createAuthor = async function (req, res) {
         if(!title){return res.status(400).send({msg:"title is required"})}
         if(!email){return res.status(400).send({msg:"email is required"})}
         if(!password){return res.status(400).send({msg:"password is required"})}
+
+        //validation of corect insertionn 
+
+
         
-        let findEmail = await authorModel.findOne({email})
+        let findEmail = await authorModel.findOne({email:email})
 
         if (findEmail) {
            return res.status(400).send({ msg: "email id already exsits" })

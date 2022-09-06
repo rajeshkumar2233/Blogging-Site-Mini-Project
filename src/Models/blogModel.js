@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const ObjectId = mongoose.Schema.Types.ObjectId;
-
+const moment = require("moment")
+const date = moment()
 const blogSchema = mongoose.Schema(
     {
         title: {
@@ -24,22 +25,22 @@ const blogSchema = mongoose.Schema(
             required: true, 
             
         }],
-        subcategory: mongoose.Schema.Types.Mixed, 
+        subcategory: [String], 
            
         
         deletedAt: {
             type: Date,
-            // default:null
+            //  default:null
         },
-        isPublished: {
+        isDeleted: {
             type: Boolean,
             default: false
         },
         publishedAt: {
             type: Date,
-            default:null
+            //  default:date.format()
         },
-        isDeleted: {
+        isPublished: {
             type: Boolean,
             default: false
         },
