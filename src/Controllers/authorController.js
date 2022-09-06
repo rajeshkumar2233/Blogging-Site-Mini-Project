@@ -10,7 +10,7 @@ const createAuthor = async function (req, res) {
         if(!email){return res.status(400).send({msg:"email is required"})}
         if(!password){return res.status(400).send({msg:"password is required"})}
 
-        //validation of corect insertionn 
+        //validation of correct insertion
 
 
         if(typeof fname !== "string" && fname.trim().length === 0) {

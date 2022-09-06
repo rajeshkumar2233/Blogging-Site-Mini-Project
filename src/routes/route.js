@@ -13,6 +13,6 @@ router.post("/authors", authorController.createAuthor)
 
 //create blog
 router.post("/blogs", blogController.createBlog)
-
-
+// delete blog id
+router.delete('/blogs/:blogId',blogController.deletebyBlogId)
 module.exports = router
