@@ -62,10 +62,7 @@ const deletebyBlogId = async function (req, res) {
 
 
 
-<<<<<<< HEAD
-=======
-module.exports.deletebyBlogId = deletebyBlogId
->>>>>>> 5c8f87f752178ec6a1914ddfe79cd1e44f8b0538
+
 // ### PUT /blogs/:blogId
 // - Updates a blog by changing the its title, body, adding tags, adding a subcategory.
 //          (Assuming tag and subcategory received in body is need to be added)
