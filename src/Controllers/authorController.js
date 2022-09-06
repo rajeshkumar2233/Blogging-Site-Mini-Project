@@ -13,13 +13,13 @@ const createAuthor = async function (req, res) {
         //validation of corect insertionn 
 
 
-        if(typeof fname !== "string") {
+        if(typeof fname !== "string" && fname.trim().length === 0) {
             return res.status(400).send({status:false,msg:"please enetr a valid firstname"})
         }
-        if(typeof lname !== "string") {
+        if(typeof lname !== "string" && fname.trim().length === 0) {
             return res.status(400).send({status:false,msg:"please enetr a valid lastname"})
         }
-        if(title !== "Mr" || title !== "Mrs" || title !== "Miss") {
+        if(title !== "Mr" && title !== "Mrs" && title !== "Miss") {
             return res.status(400).send({status:false,msg:"please enter  Mr or Mrs or Miss"})
         }
 
