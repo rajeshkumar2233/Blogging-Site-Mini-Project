@@ -135,6 +135,9 @@ const updateBlog = async function(req, res) {
 const deleteBlog = async function(req, res) {
     try {
         let data = req.query
+        if(Object.keys(data).length==0) {
+            return res.status(400).send({status:false,msg:"please enter required filter"})
+        }
         let result = { isDeleted: false, ...data }
         let find = await blogModel.find(result)
         if (find.length == 0) return res.status(404).send({ status: false, msg: "collection is not found" })
