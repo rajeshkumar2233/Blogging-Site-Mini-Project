@@ -3,7 +3,7 @@ const authorModel = require("../Models/authorModel")
 const { findById, findByIdAndUpdate } = require("../Models/authorModel")
 const moment = require("moment")
 
-const createBlog = async function (req, res) {
+const createBlog = async function(req, res) {
     try {
         const blog = req.body
         let { title, body, authorId, tags, category, subcategory, ...rest } = blog
@@ -39,7 +39,7 @@ const createBlog = async function (req, res) {
 
 }
 
-const getBlogs = async function (req, res) {
+const getBlogs = async function(req, res) {
     try {
 
         const save = req.query
@@ -57,7 +57,7 @@ const getBlogs = async function (req, res) {
 
 
 
-const updateBlog = async function (req, res) {
+const updateBlog = async function(req, res) {
 
     try {
         let id = req.params.blogId
@@ -73,7 +73,8 @@ const updateBlog = async function (req, res) {
         let data = req.body
 
         let updateBlog = await blogModel.findByIdAndUpdate(id, {
-            $set: { title: data.title, body: data.body, publishedAt: Date.now(), isPublished: true }, $push: { tags: data.tags, subcategory: data.subcategory }
+            $set: { title: data.title, body: data.body, publishedAt: Date.now(), isPublished: true },
+            $push: { tags: data.tags, subcategory: data.subcategory }
         }, { new: true })
 
         res.status(200).send({ status: true, data: updateBlog })
@@ -83,13 +84,13 @@ const updateBlog = async function (req, res) {
 
 }
 
-const deletebyBlogId = async function (req, res) {
+const deletebyBlogId = async function(req, res) {
     try {
 
         let blogId = req.params.blogId
-        // if (!blogId) {
-        //     return res.status(404).send({ status: false, msg: "blogId not found" });
-        // }
+            // if (!blogId) {
+            //     return res.status(404).send({ status: false, msg: "blogId not found" });
+            // }
 
         let blog = await blogModel.findById(blogId);
         if (!blog) return res.status(404).send({ status: false, data: " blog not found" });
@@ -107,10 +108,7 @@ const deletebyBlogId = async function (req, res) {
 }
 
 
-
-
-
-const deleteBlog = async function (req, res) {
+const deleteBlog = async function(req, res) {
     try {
         let data = req.query
         if (Object.keys(data).length == 0) return res.status(400).send({ status: false, data: "please enter required filter" })
@@ -123,9 +121,6 @@ const deleteBlog = async function (req, res) {
         res.status(500).send({ status: false, data: error.message })
     }
 }
-
-
-
 
 
 
