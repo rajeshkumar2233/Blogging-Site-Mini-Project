@@ -58,7 +58,6 @@ const login = async function (req, res) {
     try {
         let email = req.body.email
         let pass = req.body.password
-
         if (!email) return res.status(400).send({ status: false, data: "please Enter email Id" })
         if (!pass) return res.status(400).send({ status: false, data: "please Enter pass" })
         let author = await authorModel.findOne({
