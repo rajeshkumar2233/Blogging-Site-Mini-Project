@@ -7,27 +7,79 @@ const createBlog = async function(req, res) {
     try {
         const blog = req.body
         let { title, body, authorId, tags, category, subcategory, ...rest } = blog
-        if (!title) { return res.status(400).send({ msg: "title is required" }) }
-        if (!body) { return res.status(400).send({ msg: "body is required" }) }
-        if (!authorId) { return res.status(400).send({ msg: "authorId is required" }) }
-        if (!tags) { return res.status(400).send({ msg: "tags is required" }) }
-        if (!category) { return res.status(400).send({ msg: "category is required" }) }
-        if (!subcategory) { return res.status(400).send({ msg: "subcategory is required" }) }
 
+        //-------------------- check mendatory field-------------------------------------//
 
-        const isAvailable = authorModel.findById(authorId)
+        if (!title) return res.status(400).send({ data: "title is required" })
+        if (!body) return res.status(400).send({ data: "body is required" })
+        if (!authorId) return res.status(400).send({ data: "authorId is required" })
+        if (!category) return res.status(400).send({ data: "category is required" })
 
-        if (!isAvailable) {
-            return res.status(404).send({ status: false, msg: "author is in not available...!!" })
+        //-------------------- handle dge cases-----------------------------------------------//
+
+        // if (title.trim().length === 0) return res.status(400).send({ status: false, msg: "please write the title name " })
+        // if (body.trim().length === 0) return res.status(400).send({ status: false, msg: "please write the body name " })
+        // if( typeof tags !== Array ) return res.status(400).send({ status: false, msg: "Tags should be inside of array" })
+        // if( typeof category !== Array ) return res.status(400).send({ status: false, msg: "category should be inside of array" })
+        // if( typeof subcategory !== Array ) return res.status(400).send({ status: false, msg: "subcategory should be inside of array" })
+
+        //------------------check author-----------------------------------------------------// 
+
+        const authorAvailable = authorModel.findById(authorId)
+        if (!authorAvailable) {
+            return res.status(404).send({ status: false, data: "author is in not available...!!" })
         }
 
         const blogCreated = await blogModel.create(blog)
-            // if (!blogCreated) return res.status(400).send({ status: false, msg: "invalid input" })
-
-        res.status(201).send({ status: true, msg: blogCreated })
+        res.status(201).send({ status: true, data: blogCreated })
 
     } catch (error) {
-        res.status(500).send({ status: false, msg: error.message })
+        res.status(500).send({ status: false, data: error.message })
+    }
+
+}
+
+const getBlogs = async function(req, res) {
+    try {
+
+        const save = req.query
+        let findData = { isDeleted: false, isPublished: true, ...save }
+
+        const blog = await blogModel.find(findData);
+
+        if (blog.length == 0) return res.status(404).send({ status: false, data: "No blogs found" })
+
+        return res.status(200).send({ status: true, data: blog });
+    } catch (error) {
+        res.status(500).send({ status: false, data: error.message })
+    }
+}
+
+
+
+const updateBlog = async function(req, res) {
+
+    try {
+        let id = req.params.blogId
+
+        if (!id) return res.status(404).send({ status: false, data: "blogId is not present" });
+
+        let blog = await blogModel.findById(id)
+
+        if (!blog) return res.status(404).send({ status: false, data: "blog is not present" })
+
+        if (blog.isDeleted == true) return res.status(404).send({ status: false, msg: "blog is deleted" })
+
+        let data = req.body
+
+        let updateBlog = await blogModel.findByIdAndUpdate(id, {
+            $set: { title: data.title, body: data.body, publishedAt: Date.now(), isPublished: true },
+            $push: { tags: data.tags, subcategory: data.subcategory }
+        }, { new: true })
+
+        res.status(200).send({ status: true, data: updateBlog })
+    } catch (error) {
+        res.status(500).send({ status: false, data: error.message })
     }
 
 }
@@ -36,23 +88,18 @@ const deletebyBlogId = async function(req, res) {
     try {
 
         let blogId = req.params.blogId
-        if (!blogId) {
-            return res.status(404).send({ status: false, msg: "blogId not found" });
-        }
+            // if (!blogId) {
+            //     return res.status(404).send({ status: false, msg: "blogId not found" });
+            // }
 
         let blog = await blogModel.findById(blogId);
-        if (!blog) {
-            return res.status(404).send({ status: false, msg: " blog not found" });
-        }
+        if (!blog) return res.status(404).send({ status: false, data: " blog not found" });
 
         if (blog.isDeleted == false) {
-            let save = await blogModel.findOneAndUpdate({ _id: blogId }, { $set: { isDeleted: true, deletedAt: Date.now() }, }, { new: true });
-
-            return res.status(200).send({ msg: save });
-
-
+            await blogModel.findOneAndUpdate({ _id: blogId }, { $set: { isDeleted: true, deletedAt: Date.now() } }, { new: true });
+            return res.status(200).send({ msg: "the account is successfully deleted" });
         } else {
-            res.status(404).send({ status: false, msg: "already deleted" });
+            res.status(404).send({ status: false, data: "already deleted" });
         }
 
     } catch (err) {
@@ -61,119 +108,25 @@ const deletebyBlogId = async function(req, res) {
 }
 
 
-
-
-
-
-// ### PUT /blogs/:blogId
-// - Updates a blog by changing the its title, body, adding tags, adding a subcategory.
-//          (Assuming tag and subcategory received in body is need to be added)
-// - Updates a blog by changing its publish status i.e. adds publishedAt date and set published to true
-// - Check if the blogId exists (must have isDeleted false). If it doesn't, 
-//          return an HTTP status 404 with a response body like [this](#error-response-structure)
-// - Return an HTTP status 200 if updated successfully with a body like [this](#successful-response-structure) 
-// - Also make sure in the response you return the updated blog document. 
-
-const updateBlog = async function(req, res) {
-
-    try {
-        let id = req.params.blogId
-
-        let blog = await blogModel.findById(id)
-
-        //validation 
-        if (!blog) return res.status(404).send({ status: false, msg: "blog is not present" })
-
-        //  Check if the blogId exists (must have isDeleted false). If it doesn't, 
-        //          return an HTTP status 404 with a response body like [this](#error-response-structure)
-        if (blog.isDeleted == true) return res.status(404).send({ status: false, msg: "blog is deleted" })
-
-        let blogData = req.body
-            // - Updates a blog by changing the its title, body, adding tags, adding a subcategory.
-            //          (Assuming tag and subcategory received in body is need to be added)
-
-        // let { title, body, tags, subcategory } = blogData
-        // let updatedTags = blog.tags
-        // updatedTags.push(blogData.tags)
-        // let updatedSubcategory = blog.subcategory
-        // updatedSubcategory.push(blogData.updatedSubcategory)
-        let data = req.body
-
-        let updateBlog = await blogModel.findByIdAndUpdate(id, {
-                    $set: {
-                        title: data.title,
-                        body: data.body,
-
-                        publishedAt: new Date(),
-                        isPublished: true
-                    },
-                    $push: {
-                        tags: data.tags,
-                        subcategory: data.subcategory
-                    }
-                }
-
-                , { new: true }
-            )
-            // - Updates a blog by changing its publish status i.e. adds publishedAt date and set published to true
-
-        // let updatedBlog = await findByIdAndUpdate(id, { $set: { isPublished: true, publishedAt: moment().format() } }, { new: true })
-
-        res.status(200).send({ status: true, data: updateBlog })
-    } catch (error) {
-        res.status(500).send({ status: false, msg: error.message })
-    }
-
-}
 const deleteBlog = async function(req, res) {
     try {
         let data = req.query
-        if (Object.keys(data).length == 0) {
-            return res.status(400).send({ status: false, msg: "please enter required filter" })
-        }
+        if (Object.keys(data).length == 0) return res.status(400).send({ status: false, data: "please enter required filter" })
         let result = { isDeleted: false, ...data }
         let find = await blogModel.find(result)
-        if (find.length == 0) return res.status(404).send({ status: false, msg: "collection is not found" })
-        let findData = await blogModel.updateMany(result, { isDeleted: true, deletedAt: Date.now() }, { new: true })
-        res.status(200).send({ status: true, msg: findData })
+        if (find.length == 0) return res.status(404).send({ status: false, data: "collection is not found" })
+        await blogModel.updateMany(result, { isDeleted: true, deletedAt: Date.now() }, { new: true })
+        res.status(200).send({ status: true, data: "sucessfully updated" })
     } catch (error) {
-        res.status(500).send({ status: false, msg: error.message })
-    }
-}
-
-
-const getBlogs = async function(req, res) {
-    try {
-        // Spreading query to pass all the filters in condition
-        // Filter blogs list by applying filters.Query param can have any combination of below filters. -
-        //     By author Id -
-        //     By category -
-        //     List of blogs that have a specific tag -
-        //     List of blogs that have a specific subcategory
-
-        const save = req.query
-        let findData = { isDeleted: false, isPublished: true, ...save }
-            // Returns all blogs in the collection that aren 't deleted and are published -
-        const check = await blogModel.find(findData);
-
-        // If no documents are found thenf
-        // return an HTTP status 404 with a response like[this](#error - response - structure) -
-        if (check.length == 0) return res.status(404).send({ status: false, msg: "No blogs found" })
-            // Return the HTTP status 200
-            //if any documents are found.The response structure should be like[this](#successful - response - structure) -
-            //     If no documents are found then
-        return res.status(200).send({ status: true, data: check });
-    } catch (error) {
-        res.status(500).send({ status: false, msg: error.message })
+        res.status(500).send({ status: false, data: error.message })
     }
 }
 
 
 
-
-module.exports.getBlogs = getBlogs
 
 module.exports.createBlog = createBlog
-module.exports.deletebyBlogId = deletebyBlogId
+module.exports.getBlogs = getBlogs
 module.exports.updateBlog = updateBlog
+module.exports.deletebyBlogId = deletebyBlogId
 module.exports.deleteBlog = deleteBlog

@@ -8,18 +8,14 @@ router.get("/test-me", function(req, res) {
 })
 
 
-//create author
+
 router.post("/authors", authorController.createAuthor)
-
-//create blog
 router.post("/blogs", blogController.createBlog)
-    // delete blog id
-router.delete('/blogs/:blogId', blogController.deletebyBlogId)
-
-//update blogg
-
-router.put("/blogs/:blogId", blogController.updateBlog)
-router.delete("/blogs", blogController.deleteBlog)
 router.get("/getBlogs", blogController.getBlogs)
+router.put("/blogs/:blogId", blogController.updateBlog)
+router.delete('/blogs/:blogId', blogController.deletebyBlogId)
+router.delete("/blogs", blogController.deleteBlog)
+router.get("/login", authorController.login)
+
 
 module.exports = router
