@@ -7,12 +7,14 @@ const createBlog = async function (req, res) {
     try {
         const blog = req.body
         let { title, body, authorId, tags, category, subcategory, ...rest } = blog
-        if (!title) { return res.status(400).send({ msg: "title is required" }) }
-        if (!body) { return res.status(400).send({ msg: "body is required" }) }
-        if (!authorId) { return res.status(400).send({ msg: "authorId is required" }) }
-        if (!tags) { return res.status(400).send({ msg: "tags is required" }) }
-        if (!category) { return res.status(400).send({ msg: "category is required" }) }
-        if (!subcategory) { return res.status(400).send({ msg: "subcategory is required" }) }
+
+        if (!title)      return res.status(400).send({ msg: "title is required" }) 
+        if (!body)       return res.status(400).send({ msg: "body is required" }) 
+        if (!authorId)   return res.status(400).send({ msg: "authorId is required" }) 
+        if (!category)   return res.status(400).send({ msg: "category is required" }) 
+
+        if ( title.trim().length === 0)
+            return res.status(400).send({ status: false, msg: "please enetr a valid title" })
 
 
         const isAvailable = authorModel.findById(authorId)
