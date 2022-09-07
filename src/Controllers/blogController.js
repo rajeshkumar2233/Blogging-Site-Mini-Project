@@ -8,30 +8,61 @@ const createBlog = async function (req, res) {
         const blog = req.body
         let { title, body, authorId, tags, category, subcategory, ...rest } = blog
 
-        if (!title)      return res.status(400).send({ msg: "title is required" }) 
-        if (!body)       return res.status(400).send({ msg: "body is required" }) 
-        if (!authorId)   return res.status(400).send({ msg: "authorId is required" }) 
-        if (!category)   return res.status(400).send({ msg: "category is required" }) 
+        //-------------------- check mendatory field-------------------------------------//
 
-        if ( title.trim().length === 0)
-            return res.status(400).send({ status: false, msg: "please enetr a valid title" })
+        if (!title) return res.status(400).send({ msg: "title is required" })
+        if (!body) return res.status(400).send({ msg: "body is required" })
+        if (!authorId) return res.status(400).send({ msg: "authorId is required" })
+        if (!category) return res.status(400).send({ msg: "category is required" })
+        
+        //-------------------- handle dge cases-----------------------------------------------//
 
+        // if (title.trim().length === 0) return res.status(400).send({ status: false, msg: "please write the title name " })
+        // if (body.trim().length === 0) return res.status(400).send({ status: false, msg: "please write the body name " })
+        // if( typeof tags !== Array ) return res.status(400).send({ status: false, msg: "Tags should be inside of array" })
+        // if( typeof category !== Array ) return res.status(400).send({ status: false, msg: "category should be inside of array" })
+        // if( typeof subcategory !== Array ) return res.status(400).send({ status: false, msg: "subcategory should be inside of array" })
+        
+        //------------------check author-----------------------------------------------------// 
 
-        const isAvailable = authorModel.findById(authorId)
-
-        if (!isAvailable) {
+        const authorAvailable = authorModel.findById(authorId)
+        if (!authorAvailable) {
             return res.status(404).send({ status: false, msg: "author is in not available...!!" })
         }
 
         const blogCreated = await blogModel.create(blog)
-        // if (!blogCreated) return res.status(400).send({ status: false, msg: "invalid input" })
-
         res.status(201).send({ status: true, msg: blogCreated })
 
     } catch (error) {
         res.status(500).send({ status: false, msg: error.message })
     }
 
+}
+
+const getBlogs = async function (req, res) {
+    try {
+        // Spreading query to pass all the filters in condition
+        // Filter blogs list by applying filters.Query param can have any combination of below filters. -
+        //     By author Id -
+        //     By category -
+        //     List of blogs that have a specific tag -
+        //     List of blogs that have a specific subcategory
+
+        const save = req.query
+        let findData = { isDeleted: false, isPublished: true, ...save }
+        // Returns all blogs in the collection that aren 't deleted and are published -
+        const check = await blogModel.find(findData);
+
+        // If no documents are found thenf
+        // return an HTTP status 404 with a response like[this](#error - response - structure) -
+        if (check.length == 0) return res.status(404).send({ status: false, msg: "No blogs found" })
+        // Return the HTTP status 200
+        //if any documents are found.The response structure should be like[this](#successful - response - structure) -
+        //     If no documents are found then
+        return res.status(200).send({ status: true, data: check });
+    } catch (error) {
+        res.status(500).send({ status: false, msg: error.message })
+    }
 }
 
 const deletebyBlogId = async function (req, res) {
@@ -151,31 +182,7 @@ const deleteBlog = async function (req, res) {
 }
 
 
-const getBlogs = async function (req, res) {
-    try {
-        // Spreading query to pass all the filters in condition
-        // Filter blogs list by applying filters.Query param can have any combination of below filters. -
-        //     By author Id -
-        //     By category -
-        //     List of blogs that have a specific tag -
-        //     List of blogs that have a specific subcategory
 
-        const save = req.query
-        let findData = { isDeleted: false, isPublished: true, ...save }
-        // Returns all blogs in the collection that aren 't deleted and are published -
-        const check = await blogModel.find(findData);
-
-        // If no documents are found thenf
-        // return an HTTP status 404 with a response like[this](#error - response - structure) -
-        if (check.length == 0) return res.status(404).send({ status: false, msg: "No blogs found" })
-        // Return the HTTP status 200
-        //if any documents are found.The response structure should be like[this](#successful - response - structure) -
-        //     If no documents are found then
-        return res.status(200).send({ status: true, data: check });
-    } catch (error) {
-        res.status(500).send({ status: false, msg: error.message })
-    }
-}
 
 
 
