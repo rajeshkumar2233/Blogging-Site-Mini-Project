@@ -15,7 +15,7 @@ const createBlog = async function(req, res) {
         if (!authorId) return res.status(400).send({ data: "authorId is required" })
         if (!category) return res.status(400).send({ data: "category is required" })
 
-        //-------------------- handle dge cases-----------------------------------------------//
+        //-------------------- handle edge cases-----------------------------------------------//
 
         // if (title.trim().length === 0) return res.status(400).send({ status: false, msg: "please write the title name " })
         // if (body.trim().length === 0) return res.status(400).send({ status: false, msg: "please write the body name " })
