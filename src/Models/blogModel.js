@@ -1,13 +1,11 @@
 const mongoose = require('mongoose');
 const ObjectId = mongoose.Schema.Types.ObjectId;
-const moment = require("moment")
-const date = moment()
 const blogSchema = mongoose.Schema(
     {
         title: {
             type: String,
             required: true,
-            
+
         },
         body: {
             type: String,
@@ -17,20 +15,19 @@ const blogSchema = mongoose.Schema(
             type: ObjectId,
             refs: ' Author',
             required: true,
-           
+
         },
         tags: [String],
         category: [{
             type: String,
-            required: true, 
-            
+            required: true,
+
         }],
-        subcategory: [String], 
-           
-        
+        subcategory: [String],
+
         deletedAt: {
             type: Date,
-             default:null
+            default: null
         },
         isDeleted: {
             type: Boolean,
@@ -38,7 +35,7 @@ const blogSchema = mongoose.Schema(
         },
         publishedAt: {
             type: Date,
-             default:null
+            default: null
         },
         isPublished: {
             type: Boolean,
