@@ -23,6 +23,8 @@ const createBlog = async function(req, res) {
         // if( typeof category !== Array ) return res.status(400).send({ status: false, msg: "category should be inside of array" })
         // if( typeof subcategory !== Array ) return res.status(400).send({ status: false, msg: "subcategory should be inside of array" })
 
+        if(req.body.authorId !== req.decodeToken.authorId) return res.status(400).send({status:false,data:"please enter correct authorId"})
+
         //------------------check author-----------------------------------------------------// 
 
         const authorAvailable = authorModel.findById(authorId)
@@ -43,7 +45,9 @@ const getBlogs = async function(req, res) {
     try {
 
         const save = req.query
-        let findData = { isDeleted: false, isPublished: true, ...save }
+        let Id = req.decodeToken
+        
+        let findData = { isDeleted: false, isPublished: true,Id, ...save }
 
         const blog = await blogModel.find(findData);
 
