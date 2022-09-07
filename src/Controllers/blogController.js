@@ -100,29 +100,22 @@ const updateBlog = async function(req, res) {
         let data = req.body
 
         let updateBlog = await blogModel.findByIdAndUpdate(id, {
-                $set: {
-                    title: data.title,
-                    body: data.body,
+                    $set: {
+                        title: data.title,
+                        body: data.body,
 
-                    publishedAt: new Date(),
-                    isPublished: true
-                },
-                $push: {
-                    tags: data.tags,
-                    subcategory: data.subcategory
+                        publishedAt: new Date(),
+                        isPublished: true
+                    },
+                    $push: {
+                        tags: data.tags,
+                        subcategory: data.subcategory
+                    }
                 }
-            }
 
-            , { new: true }
-        )
-
-
-
-
-
-
-
-        // - Updates a blog by changing its publish status i.e. adds publishedAt date and set published to true
+                , { new: true }
+            )
+            // - Updates a blog by changing its publish status i.e. adds publishedAt date and set published to true
 
         // let updatedBlog = await findByIdAndUpdate(id, { $set: { isPublished: true, publishedAt: moment().format() } }, { new: true })
 
@@ -135,8 +128,8 @@ const updateBlog = async function(req, res) {
 const deleteBlog = async function(req, res) {
     try {
         let data = req.query
-        if(Object.keys(data).length==0) {
-            return res.status(400).send({status:false,msg:"please enter required filter"})
+        if (Object.keys(data).length == 0) {
+            return res.status(400).send({ status: false, msg: "please enter required filter" })
         }
         let result = { isDeleted: false, ...data }
         let find = await blogModel.find(result)
