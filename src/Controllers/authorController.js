@@ -14,30 +14,30 @@ const createAuthor = async function (req, res) {
 
 
         if (typeof fname !== "string" && fname.trim().length === 0)
-            return res.status(400).send({ status: false, msg: "please enetr a valid firstname" })
+            return res.status(400).send({ status: false, data: "please enetr a valid firstname" })
 
         if (typeof lname !== "string" && fname.trim().length === 0)
-            return res.status(400).send({ status: false, msg: "please enetr a valid lastname" })
+            return res.status(400).send({ status: false, data: "please enetr a valid lastname" })
 
         if (title !== "Mr" && title !== "Mrs" && title !== "Miss")
-            return res.status(400).send({ status: false, msg: "please enter  Mr or Mrs or Miss" })
+            return res.status(400).send({ status: false, data: "please enter  Mr or Mrs or Miss" })
 
         let validEmail = function (mail) {
             return (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(mail))
         }
-        if (!validEmail(email)) return res.status(400).send({ status: false, msg: "email is not valid" })
+        if (!validEmail(email)) return res.status(400).send({ status: false, data: "email is not valid" })
 
 
 
         let findEmail = await authorModel.findOne({ email: email })
 
-        if (findEmail) return res.status(400).send({ msg: "account is already exist with this email id" })
+        if (findEmail) return res.status(400).send({ data: "account is already exist with this email id" })
 
         let checkPassword = function (pass) {
             return (/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/.test(pass))
         }
         if (!checkPassword(password))
-            return res.status(400).send({ status: false, msg: "password should be Minimum eight characters, at least one letter and one number" })
+            return res.status(400).send({ status: false, data: "password should be Minimum eight characters, at least one letter and one number" })
 
         let authorCreated = await authorModel.create(author)
         return res.status(201).send(authorCreated)
@@ -45,7 +45,7 @@ const createAuthor = async function (req, res) {
 
     } catch (error) {
         console.log("hi ")
-        return res.status(500).send({ status: false, msg: error.message })
+        return res.status(500).send({ status: false, data: error.message })
     }
 
 }
