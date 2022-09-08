@@ -2,6 +2,7 @@ const blogModel = require("../Models/blogModel")
 const authorModel = require("../Models/authorModel")
 const { findById, findByIdAndUpdate } = require("../Models/authorModel")
 const moment = require("moment")
+const { mongo, default: mongoose } = require("mongoose")
 
 const createBlog = async function (req, res) {
     try {
@@ -17,6 +18,7 @@ const createBlog = async function (req, res) {
 
         //-------------------- handle edge cases-----------------------------------------------//
 
+
         if (title.trim().length === 0) return res.status(400).send({ status: false, msg: "please write the title name " })
         if (body.trim().length === 0) return res.status(400).send({ status: false, msg: "please write the body name " })
 
@@ -24,6 +26,8 @@ const createBlog = async function (req, res) {
         // if(req.body.authorId !== req.decodeToken.authorId) return res.status(400).send({status:false,data:"please enter correct authorId"})
 
         //------------------check author-----------------------------------------------------// 
+
+        
 
         const authorAvailable = authorModel.findById(authorId)
         if (!authorAvailable) {
@@ -43,6 +47,8 @@ const getBlogs = async function (req, res) {
     try {
 
         const save = req.query
+        let a = req.query.authorId
+        if(!mongoose.Types.ObjectId.isValid(a)) return res.status(400).send({ status: false, msg: "please enter valid author id " })
 
         let findData = { isDeleted: false, isPublished: true, ...save }
 
@@ -62,7 +68,7 @@ const updateBlog = async function (req, res) {
 
     try {
         let id = req.params.blogId
-        if (!mongoose.Types.ObjectId.isValid(blogId)) return res.status(400).send({ status: false, data: "blog id validation failed" })
+        if (!mongoose.Types.ObjectId.isValid(id)) return res.status(400).send({ status: false, data: "blog id validation failed" })
 
         if (!id) return res.status(404).send({ status: false, data: "blogId is not present" });
 
@@ -90,13 +96,12 @@ const deletebyBlogId = async function (req, res) {
     try {
 
         let blogId = req.params.blogId
-        if (!mongoose.Types.ObjectId.isValid(blogId)) return res.status(400).send({ status: false, data: "blog id validation failed" })
 
         let blog = await blogModel.findById(blogId);
         if (!blog) return res.status(404).send({ status: false, data: " blog not found" });
 
         if (blog.isDeleted == false) {
-            await blogModel.findOneAndUpdate({ _id: blogId }, { $set: { isDeleted: true, deletedAt: Date.now() } }, { new: true });
+            await blogModel.findOneAndUpdate( {_id : blogId} , { $set: { isDeleted: true, deletedAt: Date.now() } }, { new: true });
             return res.status(200).send({ msg: "the account is successfully deleted" });
         } else {
             res.status(404).send({ status: false, data: "already deleted" });

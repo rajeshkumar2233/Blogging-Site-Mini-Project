@@ -18,12 +18,12 @@ const createAuthor = async function (req, res) {
         const validName = function (value)  {
             return (/^(?![\. ])[a-zA-Z\. ]+(?<! )$/.test(value))
         }
-        if (!validName(fname)) return res.status(400).send({ status: false, data: "please enetr a valid firstname" })
-        if (!validName(lname)) return res.status(400).send({ status: false, data: "please enetr a valid lastname" })
+        if (!validName(fname)) return res.status(400).send({ status: false, data: "please enter a valid firstname" })
+        if (!validName(lname)) return res.status(400).send({ status: false, data: "please enter a valid lastname" })
 
         //---------------------------------Title validation------------------------------------//
 
-        if (title !== "Mr" && title !== "Mrs" && title !== "Miss") return res.status(400).send({ status: false, data: "please enter  Mr or Mrs or Miss" })
+        if (title !== "Mr" && title !== "Mrs" && title !== "Miss") return res.status(400).send({ status: false, data: "title should be Mr or Mrs or Miss" })
 
         //-----------------------------------Email validation--------------------------------//
 
@@ -38,10 +38,10 @@ const createAuthor = async function (req, res) {
         //-----------------------------------Password validation--------------------------------//
 
         let checkPassword = function (pass) {
-            return (/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/.test(pass))
+            return (/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/.test(pass))
         }
         if (!checkPassword(password))
-            return res.status(400).send({ status: false, data: "password should be Minimum eight characters, at least one letter and one number" })
+            return res.status(400).send({ status: false, data: "Minimum eight characters, at least one uppercase & one lowercase letter, one number and one special character: " })
 
         let authorCreated = await authorModel.create(author)
         return res.status(201).send(authorCreated)
@@ -59,7 +59,7 @@ const login = async function (req, res) {
         let email = req.body.email
         let pass = req.body.password
         if (!email) return res.status(400).send({ status: false, data: "please Enter email Id" })
-        if (!pass) return res.status(400).send({ status: false, data: "please Enter pass" })
+        if (!pass) return res.status(400).send({ status: false, data: "please Enter password" })
         let author = await authorModel.findOne({
             email: email,
             password: pass
@@ -71,7 +71,8 @@ const login = async function (req, res) {
         },
             "RARS"
         )
-        return res.status(200).send({ status: true, data: { token: token } })
+        res.setHeader("x-api-key", token);
+        return res.status(200).send({ status: true, data: token })
     } catch (error) {
         return res.status(500).send({ status: false, data: error.message })
     }
