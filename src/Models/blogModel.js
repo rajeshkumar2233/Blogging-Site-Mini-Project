@@ -5,11 +5,14 @@ const blogSchema = mongoose.Schema(
         title: {
             type: String,
             required: true,
+            trim:true
 
         },
         body: {
             type: String,
-            required: true
+            required: true,
+            trim:true
+            
         },
         authorId: {
             type: ObjectId,

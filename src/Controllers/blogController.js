@@ -21,11 +21,11 @@ const createBlog = async function (req, res) {
 
         //------------------check author-----------------------------------------------------// 
 
-        
         const authorAvailable = await authorModel.findById(authorId)
 
-        if (!authorAvailable) return res.status(404).send({ status: false, data: "author is in not available...!!" })
-
+        if (!authorAvailable) {
+            return res.status(404).send({ status: false, data: "author is in not available...!!" })
+        }
         if (blog["isPublished"] == true) blog["publishedAt"] = Date.now();
           
 
