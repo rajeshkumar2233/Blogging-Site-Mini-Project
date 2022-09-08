@@ -3,7 +3,7 @@ const authorModel = require("../Models/authorModel")
 const { findById, findByIdAndUpdate } = require("../Models/authorModel")
 const moment = require("moment")
 
-const createBlog = async function(req, res) {
+const createBlog = async function (req, res) {
     try {
         const blog = req.body
         let { title, body, authorId, tags, category, subcategory, ...rest } = blog
@@ -17,13 +17,11 @@ const createBlog = async function(req, res) {
 
         //-------------------- handle edge cases-----------------------------------------------//
 
-        // if (title.trim().length === 0) return res.status(400).send({ status: false, msg: "please write the title name " })
-        // if (body.trim().length === 0) return res.status(400).send({ status: false, msg: "please write the body name " })
-        // if( typeof tags !== Array ) return res.status(400).send({ status: false, msg: "Tags should be inside of array" })
-        // if( typeof category !== Array ) return res.status(400).send({ status: false, msg: "category should be inside of array" })
-        // if( typeof subcategory !== Array ) return res.status(400).send({ status: false, msg: "subcategory should be inside of array" })
+        if (title.trim().length === 0) return res.status(400).send({ status: false, msg: "please write the title name " })
+        if (body.trim().length === 0) return res.status(400).send({ status: false, msg: "please write the body name " })
 
-        if(req.body.authorId !== req.decodeToken.authorId) return res.status(400).send({status:false,data:"please enter correct authorId"})
+
+        // if(req.body.authorId !== req.decodeToken.authorId) return res.status(400).send({status:false,data:"please enter correct authorId"})
 
         //------------------check author-----------------------------------------------------// 
 
@@ -41,13 +39,12 @@ const createBlog = async function(req, res) {
 
 }
 
-const getBlogs = async function(req, res) {
+const getBlogs = async function (req, res) {
     try {
 
         const save = req.query
-        let Id = req.decodeToken
-        
-        let findData = { isDeleted: false, isPublished: true,Id, ...save }
+
+        let findData = { isDeleted: false, isPublished: true, ...save }
 
         const blog = await blogModel.find(findData);
 
@@ -61,10 +58,11 @@ const getBlogs = async function(req, res) {
 
 
 
-const updateBlog = async function(req, res) {
+const updateBlog = async function (req, res) {
 
     try {
         let id = req.params.blogId
+        if (!mongoose.Types.ObjectId.isValid(blogId)) return res.status(400).send({ status: false, data: "blog id validation failed" })
 
         if (!id) return res.status(404).send({ status: false, data: "blogId is not present" });
 
@@ -88,13 +86,11 @@ const updateBlog = async function(req, res) {
 
 }
 
-const deletebyBlogId = async function(req, res) {
+const deletebyBlogId = async function (req, res) {
     try {
 
         let blogId = req.params.blogId
-            // if (!blogId) {
-            //     return res.status(404).send({ status: false, msg: "blogId not found" });
-            // }
+        if (!mongoose.Types.ObjectId.isValid(blogId)) return res.status(400).send({ status: false, data: "blog id validation failed" })
 
         let blog = await blogModel.findById(blogId);
         if (!blog) return res.status(404).send({ status: false, data: " blog not found" });
@@ -112,15 +108,15 @@ const deletebyBlogId = async function(req, res) {
 }
 
 
-const deleteBlog = async function(req, res) {
+const deleteBlog = async function (req, res) {
     try {
         let data = req.query
         if (Object.keys(data).length == 0) return res.status(400).send({ status: false, data: "please enter required filter" })
-        let result = { isDeleted: false, ...data }
-        let find = await blogModel.find(result)
-        if (find.length == 0) return res.status(404).send({ status: false, data: "collection is not found" })
-        await blogModel.updateMany(result, { isDeleted: true, deletedAt: Date.now() }, { new: true })
-        res.status(200).send({ status: true, data: "sucessfully updated" })
+        let filter = { isDeleted: false, ...data }
+        let findData = await blogModel.find(filter)
+        if (findData.length == 0) return res.status(404).send({ status: false, data: "There is no such Blog" })
+        await blogModel.updateMany(filter, { isDeleted: true, deletedAt: Date.now() }, { new: true })
+        res.status(200).send({ status: true, data: "sucessfully deleted" })
     } catch (error) {
         res.status(500).send({ status: false, data: error.message })
     }
