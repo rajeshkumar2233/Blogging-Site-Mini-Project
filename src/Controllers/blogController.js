@@ -15,15 +15,19 @@ const createBlog = async function (req, res) {
         if (!body) return res.status(400).send({ data: "body is required" })
         if (!authorId) return res.status(400).send({ data: "authorId is required" })
         if (!category) return res.status(400).send({ data: "category is required" })
+        if (!mongoose.Types.ObjectId.isValid(authorId)) return res.status(400).send({ status: false, msg: "please enter valid author id " })
 
         // if(req.body.authorId !== req.decodeToken.authorId) return res.status(400).send({status:false,data:"please enter correct authorId"})
 
         //------------------check author-----------------------------------------------------// 
 
-        const authorAvailable = authorModel.findById(authorId)
+        const authorAvailable = await authorModel.findById(authorId)
+
         if (!authorAvailable) {
             return res.status(404).send({ status: false, data: "author is in not available...!!" })
         }
+        if (blog["isPublished"] == true) blog["publishedAt"] = Date.now();
+          
 
         const blogCreated = await blogModel.create(blog)
         res.status(201).send({ status: true, data: blogCreated })
