@@ -112,6 +112,7 @@ const createBlog = async function (req, res) {
         try {
             let data = req.query
             let findData = await blogModel.find({isDeleted:false,...data})
+            if(findData.length == 0) return res.status(200).send({ status: true, data: "No blogs found" })
             await blogModel.updateMany(findData, { isDeleted: true, deletedAt: Date.now() }, { new: true })
             res.status(200).send({ status: true, data: "sucessfully deleted" })
         } catch (error) {
