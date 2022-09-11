@@ -71,10 +71,10 @@ const updateBlog = async function (req, res) {
 
         if (!blog) return res.status(404).send({ status: false, data: "blog is not present" })
 
-        if (blog.isDeleted == true) return res.status(404).send({ status: false, msg: "blog is already deleted" })
+        if (blog.isDeleted == true) return res.status(200).send({ status: false, msg: "blog is already deleted" })
 
         let data = req.body
-        if (Object.keys(data).length == 0) return res.status(404).send({status: false, msg: "Please include atleast one properties to be updated"})
+        if (Object.keys(data).length == 0) return res.status(400).send({status: false, msg: "Please include atleast one properties to be updated"})
 
         let updateBlog = await blogModel.findByIdAndUpdate(id, {
             $set: { title: data.title, body: data.body, publishedAt: Date.now(), isPublished: true },
@@ -100,7 +100,7 @@ const deletebyBlogId = async function (req, res) {
             await blogModel.findOneAndUpdate({ _id: blogId }, { $set: { isDeleted: true, deletedAt: Date.now() } }, { new: true });
             return res.status(200).send({ msg: "the blog is successfully deleted" });
         } else {
-            res.status(404).send({ status: false, data: "already deleted" });
+            res.status(200).send({ status: false, data: "already deleted" });
         }
 
     } catch (err) {
@@ -117,7 +117,7 @@ let deleteByQuery = async function (req, res) {
         if (data.authorId) {
             if (!mongoose.Types.ObjectId.isValid(data.authorId)) return res.status(400).send({ status: false, msg: "please enter valid author id " })
             if (req.decodeToken.authorId != data.authorId) {
-                return res.status(401).send({ status: false, msg: "you are not authorised to delete" })
+                return res.status(403).send({ status: false, msg: "you are not authorised to delete" })
             } else {
                 let blogData = await blogModel.find({ isDeleted: false, ...data })
                 if (blogData.length == 0) {

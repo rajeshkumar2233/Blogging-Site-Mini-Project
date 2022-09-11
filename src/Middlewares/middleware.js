@@ -7,9 +7,9 @@ const mongoose = require("mongoose")
 const authentication = async function (req,res,next) {
     try {
     let token = req.headers["x-api-key"]
-    if(!token) return res.status(401).send({status:false,data:"token is not present for authentication"})
+    if(!token) return res.status(400).send({status:false,data:"token is not present for authentication"})
     let decodeToken = jwt.verify(token,"RARS")
-    if(!decodeToken) return res.status(403).send({status:false,data:"authentication failed"})
+    if(!decodeToken) return res.status(401).send({status:false,data:"authentication failed"})
     req.decodeToken = decodeToken
     next()
     } catch (error) {
