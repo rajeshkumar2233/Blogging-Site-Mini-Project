@@ -30,17 +30,8 @@ const authorisation = async function(req,res,next) {
     next()
 }
 
-// const authorisation1 = async function(req,res,next) {
-//     let id = req.query.authorId
-//     if(!id) return res.status(403).send({status:false,data:"authorId is required"})
-//     if(!mongoose.Types.ObjectId.isValid(id)) return res.status(400).send({status:false,data:"Please enter valid id"})
-//     let author_Id = req.decodeToken.authorId
-//     if(id !== author_Id) return res.status(403).send({status:false,data:"You are not authorised"})
-//     next()
-
-// }
 
 module.exports.authentication = authentication
 module.exports.authorisation = authorisation
-// module.exports.authorisation1 = authorisation1
+
 
