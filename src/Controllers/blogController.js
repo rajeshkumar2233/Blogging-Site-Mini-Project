@@ -74,7 +74,7 @@ const updateBlog = async function (req, res) {
         if (blog.isDeleted == true) return res.status(404).send({ status: false, msg: "blog is already deleted" })
 
         let data = req.body
-        // if (Object.keys(data).length == 0) return res.status(404).send({status: false, msg: "Please include atleast one properties to be updated"})
+        if (Object.keys(data).length == 0) return res.status(404).send({status: false, msg: "Please include atleast one properties to be updated"})
 
         let updateBlog = await blogModel.findByIdAndUpdate(id, {
             $set: { title: data.title, body: data.body, publishedAt: Date.now(), isPublished: true },
