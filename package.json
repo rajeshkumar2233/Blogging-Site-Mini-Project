@@ -1,13 +1,17 @@
 {
-  "name": "src",
+  "name": "blogging.site.mini.project",
   "version": "1.0.0",
-  "description": "Project-1-blogging",
+  "description": "1st project on blogging site",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "nodemon src/index.js"
   },
-  "author": "",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/rajeshkumar2233/Blogging-Site-Mini-Project.git"
+  },
+  "author": "Soubhagya Samal,Rajesh Kumar,Ashanka Dongare,Rahul Gupta",
   "license": "ISC",
   "dependencies": {
     "body-parser": "^1.19.0",

@@ -44,11 +44,10 @@ const createAuthor = async function (req, res) {
             return res.status(400).send({ status: false, data: "Minimum eight characters, at least one uppercase & one lowercase letter, one number and one special character: " })
 
         let authorCreated = await authorModel.create(author)
-        return res.status(201).send(authorCreated)
+        return res.status(201).send({status:true,msg:"Author created successfully" ,data:authorCreated})
 
     } catch (error) {
-        console.log("hi ")
-        return res.status(500).send({ status: false, data: error.message })
+        return res.status(500).send({ status: false,data: error.message })
     }
 
 }
@@ -71,8 +70,7 @@ const login = async function (req, res) {
         },
             "RARS"
         )
-        res.setHeader("x-api-key", token);
-        return res.status(200).send({ status: true, data: token })
+        return res.status(200).send({ status: true,msg:"login successfully", data: token })
     } catch (error) {
         return res.status(500).send({ status: false, data: error.message })
     }
