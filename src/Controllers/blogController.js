@@ -4,10 +4,12 @@ const { findById, findByIdAndUpdate } = require("../Models/authorModel")
 const moment = require("moment")
 const { mongo, default: mongoose } = require("mongoose")
 
+
+//============================================================================================================
 const createBlog = async function (req, res) {
     try {
         const blog = req.body
-        if(Object.keys(blog).length==0) return res.status(400).send({status:false,data:"Please enter the details to create a blog"})
+        if(Object.keys(blog).length==0) return res.status(400).send({status:false,data:"Please enter the details to create a blog...!!"})
         let { title, body, authorId, tags, category, subcategory, ...rest } = blog
 
         //-------------------- check mendatory field-------------------------------------//
@@ -16,7 +18,7 @@ const createBlog = async function (req, res) {
         if (!body) return res.status(400).send({ data: "body is required" })
         if (!authorId) return res.status(400).send({ data: "authorId is required" })
         if (!category) return res.status(400).send({ data: "category is required" })
-        if (!mongoose.Types.ObjectId.isValid(authorId)) return res.status(400).send({ status: false, msg: "please enter valid author id " })
+        if (!mongoose.Types.ObjectId.isValid(authorId)) return res.status(400).send({ status: false, msg: "please enter valid author id ..!" })
 
         // if(req.body.authorId !== req.decodeToken.authorId) return res.status(400).send({status:false,data:"please enter correct authorId"})
 
@@ -44,6 +46,7 @@ const createBlog = async function (req, res) {
         res.status(500).send({ status: false, data: error.message })
     }
 }
+//=================================================================================================================
 const getBlogs = async function (req, res) {
     try {
 
@@ -65,7 +68,7 @@ const getBlogs = async function (req, res) {
     }
 }
 
-
+//==========================================================================================================================
 
 const updateBlog = async function (req, res) {
 
@@ -114,7 +117,7 @@ const deletebyBlogId = async function (req, res) {
         return res.status(500).send({ status: false, error: err.message })
     }
 }
-
+//===================================================================================================================
 let deleteByQuery = async function (req, res) {
     try {
 

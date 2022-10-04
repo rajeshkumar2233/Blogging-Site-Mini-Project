@@ -57,7 +57,7 @@ example of a query url: blogs?filtername=filtervalue&f2=fv2
 
 ## Phase II
 
-- Add authentication and authroisation feature
+- Add authentication and authroisation features
 
 ### POST /login
 - Allow an author to login with their email and password. On a successful login attempt return a JWT token contatining the authorId in response body like [this](#Successful-login-Response-structure)

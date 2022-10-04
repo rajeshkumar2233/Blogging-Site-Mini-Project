@@ -9,7 +9,7 @@ router.get("/test-me", function(req, res) {
 })
 
 
-
+//=======================================================================
 router.post("/authors", authorController.createAuthor)
 router.post("/blogs",mw.authentication, blogController.createBlog)
 router.get("/blogs",mw.authentication, blogController.getBlogs)
@@ -17,6 +17,6 @@ router.put("/blogs/:blogId",mw.authentication,mw.authorisation, blogController.u
 router.delete('/blogs/:blogId',mw.authentication,mw.authorisation, blogController.deletebyBlogId)
 router.delete("/blogs",mw.authentication, blogController.deleteByQuery)
 router.post("/login", authorController.login)
-
+//=================================================================================================
 
 module.exports = router

@@ -1,6 +1,8 @@
 const authorModel = require("../Models/authorModel")
 const jwt = require("jsonwebtoken")
 
+
+//====================================================================================================================
 const createAuthor = async function (req, res) {
     try {
         let author = req.body
@@ -52,7 +54,7 @@ const createAuthor = async function (req, res) {
 
 }
 
-
+//=================================================================================================================
 const login = async function (req, res) {
     try {
         let email = req.body.email
